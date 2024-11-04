@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 1488;
 
 app.use(cors());
 
-app.get('/image/:name', async (req, res) => {
+app.get('/res/:name', async (req, res) => {
     const imageName = req.params.name;
     const imageUrl = `https://storage.yandexcloud.net/lbs3/${imageName}`;
 
