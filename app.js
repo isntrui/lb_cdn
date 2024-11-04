@@ -16,7 +16,8 @@ const checkCache = (req, res, next) => {
 
     if (cachedData) {
         console.log(`Serving from cache: ${imageName}`);
-        return res.send(cachedData);
+        res.set('Content-Type', cachedData.contentType);
+        return res.send(cachedData.data);
     }
     next();
 };
@@ -30,15 +31,15 @@ app.get('/res/:name', checkCache, async (req, res) => {
             responseType: 'arraybuffer'
         });
 
-        res.set('Content-Type', response.headers['content-type']);
-        res.set('Content-Length', response.headers['content-length']);
+        const contentType = response.headers['content-type'];
+        res.set('Content-Type', contentType);
+        res.set('Content-Length', response.data.length);
 
-        cache.set(imageName, response.data);
+        cache.set(imageName, { data: response.data, contentType });
 
         res.send(response.data);
     } catch (error) {
         console.error(`Error fetching image: ${error.message}`);
-
         if (error.response) {
             res.status(error.response.status).send(`Error fetching image: ${error.response.statusText}`);
         } else {
