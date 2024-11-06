@@ -23,11 +23,11 @@ const checkCache = (req, res, next) => {
 };
 
 app.get('/res/:name', checkCache, async (req, res) => {
-    const imageName = req.params.name;
-    const imageUrl = `https://storage.yandexcloud.net/lbs3/${imageName}`;
+    const fileName = req.params.name;
+    const fileUrl = `https://storage.yandexcloud.net/lbs3/${fileName}`;
 
     try {
-        const response = await axios.get(imageUrl, {
+        const response = await axios.get(fileUrl, {
             responseType: 'arraybuffer'
         });
 
@@ -35,7 +35,7 @@ app.get('/res/:name', checkCache, async (req, res) => {
         res.set('Content-Type', contentType);
         res.set('Content-Length', response.data.length);
 
-        cache.set(imageName, { data: response.data, contentType });
+        cache.set(fileName, { data: response.data, contentType });
 
         res.send(response.data);
     } catch (error) {
